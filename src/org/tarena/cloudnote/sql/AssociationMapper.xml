@@ -1,0 +1,80 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+<mapper namespace="org.tarena.cloudnote.dao.AssociationDao">
+	<select id="findUserAndBooks" parameterType="string" resultMap="userMap">
+		select * from cn_user u join cn_notebook b
+		on(u.cn_user_id=b.cn_user_id)
+		where u.cn_user_id=#{userId}
+	</select>
+	<!-- 镊畾涔?-->
+	<resultMap type="org.tarena.cloudnote.entity.User" id="userMap">
+		<!-- 瀹氢箟铡熸湁User瀵瑰簲镄勫睘镐ц杞?-->
+		<id property="cn_user_id" column="cn_user_id" />
+		<result property="cn_user_name" column="cn_user_name" />
+		<result property="cn_user_password" column="cn_user_password" />
+		<result property="cn_user_token" column="cn_user_token" />
+		<result property="cn_user_nick" column="cn_user_nick" />
+		<!-- 瀹氢箟books鍏宠仈镄勫睘镐ц杞?-->
+		<collection property="books" javaType="java.util.List"
+			ofType="org.tarena.cloudnote.entity.NoteBook">
+			<id property="cn_notebook_id" column="cn_notebook_id" />
+			<result property="cn_user_id" column="cn_user_id" />
+			<result property="cn_notebook_type_id" column="cn_notebook_type_id" />
+			<result property="cn_notebook_name" column="cn_notebook_name" />
+			<result property="cn_notebook_desc" column="cn_notebook_desc" />
+			<result property="cn_notebook_createtime" column="cn_notebook_createtime"
+				javaType="java.sql.Timestamp" />
+		</collection>
+	</resultMap>
+	<!-- 鏂规硶浜?镓ц鏁堢巼搴?浜屾镆ヨ -->
+	<!-- <select id="findUserAndBooks1" parameterType="string" resultMap="userMap1">
+		select * from cn_user where cn_user_id=#{userId}
+	</select>
+	<resultMap id="userMap1" type="org.tarena.cloudnote.entity.User">
+		鐪佺暐鍚岖О瀵瑰簲镄勬暟鎹姸镐?
+		<collection property="books" javaType="java.util.List"
+			ofType="org.tarena.cloudnote.entity.NoteBook" select="findBookByUserId"
+			column="cn_user_id">
+		</collection>
+	</resultMap>
+	<select id="findBookByUserId" parameterType="string"
+		resultType="org.tarena.cloudnote.entity.NoteBook">
+		select * from cn_notebook where cn_user_id=#{userId}
+	</select> -->
+
+	<!-- 鍗曚釜瀵硅薄鍏宠仈鏄犲皠 -->
+	<select id="findBooksAndUser" resultMap="bookMap">
+		select * from cn_notebook b join cn_user u
+		on(b.cn_user_id=u.cn_user_id)
+	</select>
+	<resultMap id="bookMap" type="org.tarena.cloudnote.entity.NoteBook">
+		<id property="cn_notebook_id" column="cn_notebook_id" />
+		<result property="cn_notebook_type_id" column="cn_notebook_type_id" />
+		<result property="cn_notebook_name" column="cn_notebook_name" />
+		<result property="cn_notebook_desc" column="cn_notebook_desc" />
+		<result property="cn_notebook_createtime" column="cn_notebook_createtime" />
+		<!-- 锷犺浇鍏宠仈灞炴€ser淇℃伅 notebook->user 鍏宠仈涓€涓敤association -->
+		<association property="user" javaType="org.tarena.cloudnote.entity.User">
+			<!-- 锷犺浇User瀵硅薄灞炴€т俊鎭?-->
+			<id property="cn_user_id" column="cn_user_id" />
+			<result property="cn_user_name" column="cn_user_name" />
+			<result property="cn_user_password" column="cn_user_password" />
+			<result property="cn_user_token" column="cn_user_token" />
+			<result property="cn_user_nick" column="cn_user_nick" />
+		</association>
+	</resultMap>
+	<!-- 鍙﹀鍙戦€乻ql锷犺浇user淇℃伅 -->
+	<!-- <select id="findBooksAndUser1" resultMap="bookMap1">
+	    select * from cn_notebook
+	</select>
+	<resultMap type="org.tarena.cloudnote.entity.NoteBook" id="bookMap1">
+	    鐪佺暐瀵瑰簲瀛楁
+	    鍏宠仈user灞炴€у皝瑁?
+	    <association property="user" javaType="org.tarena.cloudnote.entity.User" select="">
+	    </association>
+	</resultMap>
+	<select id="findUser" parameterType="string" resultType="org.tarena.cloudnote.entity.User">
+	    select * from cn_user where cn_user_id=#{userId}
+	</select> -->
+</mapper>

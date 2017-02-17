@@ -1,0 +1,3 @@
+eclipse.preferences.version=1
+validator.Checked=WebRoot/scripts/ue,WebRoot/scripts/jquery.min.js,WebRoot/scripts/run_prettify.js
+validator.Unchecked=

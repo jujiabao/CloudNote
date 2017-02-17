@@ -1,0 +1,69 @@
+
+<html>
+<head>
+	<title>笔记管理</title>
+	<script type="text/javascript" src="scripts/jquery.min.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$("#search_btn").click(function(){
+				//获取请求参数
+				var title=$("#title").val().trim();
+				var status=$("#status").val();
+				var begin=$("#begin").val().trim();
+				var end=$("#end").val().trim();
+				$.ajax({
+					url:"searchNotes.do",
+					type:"post",
+					data:{"title":title,"status":status,"beginTime":begin,"endTime":end},
+					dataType:"json",
+					success:function(result){
+						if(result.status==0){
+							var notes=result.data;
+							$("#note_tb tr:gt(0)").remove();
+							//循环生成列表
+							for(var i=0;i<notes.length;i++){
+							var noteTitle=	notes[i].cn_note_title;
+							var noteStatus=notes[i].cn_note_status_id;
+							var creatTime=notes[i].cn_note_create_time;
+						   if(noteStatus=='1'){
+								noteStatus='normal';
+							}else if(noteStatus=='2'){
+								noteStatus='recycle';
+							}
+							var str="<tr><td>"+noteTitle+"</td><td>"+noteStatus+"</td><td>"+creatTime+"</td></tr>";
+							$("#note_tb").append(str);
+							}
+						}
+					},
+					error:function(){
+						alert("检索失败");
+					}
+				});
+			});
+		});
+	</script>
+</head>
+<body>
+	<form action="note_message">
+		标题:<input type="text"id="title"/>
+		状态:<select>
+			<option value="-1">all</option>
+			<option value="1">normal</option>
+			<option value="2">status</option>
+			</select>
+			<br/>
+		起始日期:<input type="text" id="begin"/>
+		结束日期:<input type="text" id="end"/>
+	
+	<input type="button" value="检索" id="search_btn"/>
+	</form>
+	<hr/>
+	<table id="note_tb">
+		<tr>
+			<td>列表</td>
+			<td>状态</td>
+			<td>创建时间</td>
+		</tr>
+	</table>
+</body>
+</html>
